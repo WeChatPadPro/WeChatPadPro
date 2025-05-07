@@ -1,4 +1,4 @@
-# WeChatPadPro 接口文档 - iPad 微信 API
+# WeChatPadPro 接口文档 - iPad WeChat API
 
 本项目为 [WeChat-iPad-8059 iOS18.3.2 最新修订版](https://github.com/nextflowapp/WeChatPadPro) 提供的 **Pad 微信接口 API**，通过 HTTP 和 WebSocket 协议实现多种微信功能的自动化控制与集成。
 
