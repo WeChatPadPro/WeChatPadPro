@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Swagger UI</title>
+  <link rel="stylesheet" type="text/css" href="./swagger-ui.css" />
+  <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
+  <style>
+    /* Reset */
+    html,
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      overflow-y: scroll;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit;
+    }
+
+    body {
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    /* Swagger UI Container */
+    #swagger-ui {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Floating Window */
+    .floating-window {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      z-index: 2;
+      animation: glow 2s infinite alternate;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      font-size: 18px;
+      color: #e74c3c;
+      cursor: pointer;
+    }
+
+    /* Form and Input Styling */
+    #xxcaibi {
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      width: 90%;
+    }
+
+    .xxcaibi-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .xxcaibi-label {
+      color: #555;
+      font-size: 14px;
+      width: 120px;
+    }
+
+    .xxcaibi-input,
+    .xxcaibi-switch {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .xxcaibi-input:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+
+    .xxcaibi-switch {
+      width: 40px;
+      height: 20px;
+      appearance: none;
+      background-color: #ccc;
+      /* 默认状态下的开关背景颜色 */
+      outline: none;
+      border-radius: 20px;
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .xxcaibi-switch:checked {
+      background-color: #4CAF50;
+    }
+
+    .xxcaibi-switch::before {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: white;
+      top: 1px;
+      left: 1px;
+      transition: transform 0.3s ease;
+    }
+
+    .xxcaibi-switch:checked::before {
+      transform: translateX(20px);
+    }
+
+    /* Radio Button Group */
+    .radio-group {
+      display: flex;
+      justify-content: space-between;
+      width: 80%;
+    }
+
+    .radio-group label {
+      display: flex;
+      align-items: center;
+    }
+
+    .radio-group input[type="radio"] {
+      margin-right: 10px;
+      transform: scale(1.5);
+    }
+
+    .radio-group input[type="radio"]:focus {
+      outline: none;
+    }
+
+    /* Glow Animation */
+    @keyframes glow {
+      from {
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+      }
+
+      to {
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
+      }
+    }
+
+    /* Link Card */
+    .card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100px;
+      z-index: 2;
+      transition: transform 0.5s ease, filter 0.5s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.7));
+    }
+
+    /* Card Movement Animation */
+    @keyframes cardMove {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      50% {
+        transform: translate(50vw, 50vh);
+      }
+
+      100% {
+        transform: translate(0, 0);
+      }
+    }
+
+    .base-url {
+      display: none;
+    }
+
+    /* Telegram Link Container */
+    .tg-link {
+      display: flex;
+      margin-top: 20px;
+    }
+
+    /* Telegram Button */
+    .tg-button {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #5cadff !important;
+      color: white !important;
+      font-size: 16px;
+      text-decoration: none;
+      border-radius: 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Telegram Button Hover Effect */
+    .tg-button:hover {
+      background-color: #007ab8 !important;
+      transform: translateY(-2px);
+    }
+
+    /* Telegram Icon */
+    .tg-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    .container input[type="text"] {
+      flex: 1;
+      width: 300px;
+      /* 初始宽度 */
+      max-width: 500px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+
+    .container button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-left: 12px;
+    }
+
+    .container button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .container button:hover:not(:disabled) {
+      background-color: #0056b3;
+    }
+
+    #messages {
+      margin-top: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div id="xxcaibi" class="wrapper" style="display: none;">
+    <div class="xxcaibi-group">
+      <label for="admin-key" class="xxcaibi-label">ADMIN_KEY</label>
+      <input type="text" id="admin-key" class="xxcaibi-input" placeholder="管理员接口 ADMIN_KEY">
+    </div>
+
+    <div class="xxcaibi-group">
+      <label for="token-key" class="xxcaibi-label">TOKEN_KEY</label>
+      <input type="text" id="token-key" class="xxcaibi-input" placeholder="普通API TOKEN_KEY">
+    </div>
+
+    <div class="xxcaibi-group">
+      <label class="xxcaibi-label">Swagger 展开方式</label>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="expand-options" value="none" checked>不展开
+        </label>
+        <label>
+          <input type="radio" name="expand-options" value="list">只展开API
+        </label>
+        <label>
+          <input type="radio" name="expand-options" value="full">展开所有
+        </label>
+      </div>
+    </div>
+
+    <div class="xxcaibi-group">
+      <label for="copy-base-url" class="xxcaibi-label">是否复制根路径</label>
+      <input style="flex: none !important" type="checkbox" id="copy-base-url" class="xxcaibi-switch" checked>
+      <span style="margin-left: 20px;" id="BASE_URL"></span>
+    </div>
+
+    <h4 style="text-align: center;line-height: 1;margin-bottom: 10px">WS 客户端 (同步消息)</h4>
+    <div class="container">
+      <input id="urlInput" type="text" placeholder="输入 WebSocket URL" />
+      <button id="connectButton">连接</button>
+      <button id="disconnectButton" disabled>取消连接</button>
+      <button id="clearMessagesButton">清理消息</button>
+    </div>
+    <div id="messages"></div>
+  </div>
+
+  <script>
+    let socket;
+    document.getElementById('urlInput').value = window.location.origin.replace(/^http/, 'ws') + '/ws/GetSyncMsg?key='
+
+    // 更新按钮文本
+    function updateButton(button, text, isLoading) {
+      button.innerHTML = isLoading ? text + '...' : text;
+      button.disabled = isLoading;
+    }
+
+    // 连接按钮点击事件
+    document.getElementById('connectButton').onclick = function () {
+      const url = document.getElementById('urlInput').value;
+
+      // 如果已经有连接，先关闭
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close();
+      }
+
+      // 更新按钮状态为连接中
+      updateButton(this, '连接中', true);
+
+      console.log('连接 WebSocket 服务器:', url,1111111111111111);
+      // 创建 WebSocket 连接
+      socket = new WebSocket(url);
+
+      // 连接成功时
+      socket.onopen = function () {
+        console.log('已连接到服务器');
+        document.getElementById('messages').innerHTML += '<p>已连接到服务器</p>';
+        updateButton(document.getElementById('connectButton'), '连接', false); // 重置连接按钮
+        document.getElementById('disconnectButton').disabled = false; // 启用取消连接按钮
+        document.getElementById('connectButton').disabled = true;
+      };
+
+      // 接收消息
+      socket.onmessage = function (event) {
+        console.log('收到来自服务器的消息:', event.data);
+        document.getElementById('messages').innerHTML += '<p>服务器: ' + event.data + '</p>';
+      };
+
+      // 连接关闭时
+      socket.onclose = function () {
+        console.log('与服务器的连接已关闭');
+        document.getElementById('messages').innerHTML += '<p>与服务器的连接已关闭</p>';
+        updateButton(document.getElementById('connectButton'), '连接', false); // 启用连接按钮
+        document.getElementById('disconnectButton').innerHTML = "取消连接",
+          document.getElementById('disconnectButton').disabled = true; // 启用连接按钮
+        document.getElementById('connectButton').disabled = false; // 启用连接按钮
+      };
+
+      // 处理错误
+      socket.onerror = function (error) {
+        console.error('WebSocket 错误:', error);
+        document.getElementById('messages').innerHTML += '<p>WebSocket 错误: ' + error.message + '</p>';
+        updateButton(document.getElementById('connectButton'), '连接', false); // 重置连接按钮
+      };
+    };
+
+    // 取消连接按钮点击事件
+    document.getElementById('disconnectButton').onclick = function () {
+      updateButton(this, '取消中', true); // 更新为取消中状态
+      if (socket) {
+        setTimeout(function () {
+          socket.close();
+        }, 30)
+
+      }
+    };
+
+    // 清理消息按钮点击事件
+    document.getElementById('clearMessagesButton').onclick = function () {
+      document.getElementById('messages').innerHTML = ''; // 清空消息区域
+    };
+  </script>
+  <div id="swagger-ui"></div>
+
+  <!-- Floating window -->
+  <div class="floating-window" style="display: none !important">
+  </div>
+
+  <script src="./swagger-ui-bundle.js" charset="UTF-8"></script>
+  <script src="./swagger-ui-standalone-preset.js" charset="UTF-8"></script>
+  <script src="./jquery-3.7.1.slim.min.js"></script>
+
+  <script>
+    function closeDiv(element) {
+      element.parentElement.style.display = 'none';
+    }
+
+    function isAdminApi(pathKey) {
+      if (pathKey.startsWith("/admin/")) {
+        return true
+      }
+      return window.xxcaibi.adminUrls[pathKey]
+    }
+
+    const CustomPlugin = function (system) {
+      return {
+        statePlugins: {
+          spec: {
+            actions: {
+              updateQueryParam: (paramName, paramValue, isAdminKey = false) => (state) => {
+                const spec = state.specSelectors.specJson().toJS();
+                const paths = spec.paths;
+
+                Object.keys(paths).forEach(pathKey => {
+                  if (!isAdminKey && isAdminApi(pathKey)) {
+                    // 非 ADMIN_KEY 并且是 ADMIN 接口
+                    return;
+                  }
+                  if (isAdminKey && !isAdminApi(pathKey)) {
+                    // 是 ADMIN_KEY 并且 不是 ADMIN 接口
+                    return;
+                  }
+                  Object.keys(paths[pathKey]).forEach(method => {
+                    const params = paths[pathKey][method].parameters;
+                    params.forEach(param => {
+                      if (param.name === paramName && param.in === 'query') {
+                        param.default = paramValue;
+                      }
+                    });
+                  });
+                });
+
+                state.specActions.updateSpec(JSON.stringify(spec));
+              },
+              updateConfigs: (spec) => (state) => {
+                state.specActions.updateSpec(JSON.stringify(spec));
+              },
+            },
+            wrapActions: {
+              updateSpec: (oriAction, system) => (...args) => {
+                return oriAction(...args)
+              },
+            },
+          },
+        },
+      };
+    };
+
+    // 检查 Swagger-UI 内的 img.opblock-loading-animation 请求体节点是否加载完成
+    function checkSwaggerLoadingComplete(targetFunc) {
+      const targetNode = document.getElementById('swagger-ui');
+      const config = { childList: true, subtree: true };
+      const callback = function (mutationsList, observer) {
+        const loadingElements = targetNode.querySelectorAll('img.opblock-loading-animation');
+        if (loadingElements.length === 0) {
+          console.log('Swagger UI loaded successfully');
+          observer.disconnect(); // 停止观察
+          targetFunc && targetFunc();
+        }
+      };
+      const observer = new MutationObserver(callback);
+
+      setTimeout(function () {
+        $("#swagger-ui").append("&nbsp;")
+      }, 100)
+      observer.observe(targetNode, config); // DOM 节点无变化则不会触发监听
+    }
+
+    // 粘贴到系统剪切板1
+    function copy(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        // navigator.clipboard 只能在 HTTPS 环境使用; 旧版浏览器兼容性不好
+        navigator.clipboard.writeText(text).then(function () {
+        }).catch(function (error) {
+          console.error('Failed to copy text: ', error);
+          fallbackCopy(text);
+        });
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    // 粘贴到系统剪切板2
+    function fallbackCopy(text) {
+      // 使用 textarea 标签 可以复制 pre 代码标签里的换行
+      let textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.error('Fallback copy failed: ', err);
+      }
+      document.body.removeChild(textArea);
+    }
+
+    // 复制 API 的路径即描述
+    function addCopy1(selector) {
+      let pathElements;
+      // opblock-summary-path opblock-summary-description
+      if (selector) {
+        pathElements = $(selector).parent().find(".opblock-summary-description");
+      } else {
+        pathElements = $(".opblock-summary-description");
+        addCopy2();
+      }
+      if (pathElements.length === 0) {
+        return;
+      }
+      console.log("API数量:", pathElements.length);
+
+      $(".opblock-summary-post").click(function () {
+        let status = $(this).children().first().attr("aria-expanded");
+        if (status === "true") {
+          return;
+        }
+        let curId = $(this).parent().attr("id");
+        // console.log(curId, status);
+        setTimeout(function () {
+          addCopy2(`#${curId}`);
+        }, 100);
+      });
+
+      pathElements.each(function (index, pathElement) {
+        pathElement = $(pathElement);
+        let isCopy = pathElement.attr("copy");
+        if (isCopy === "true") { // 已经添加过 copy 按钮
+          return;
+        }
+        pathElement.after(
+          $("<button>复制</button>").css("cursor", "pointer").css("color", "#FFF").css("background", "#2b85e4").css("border-color", "#2b85e4").css("padding", "4px 8px").css("border-radius", "4px").css("margin-right", "10px").click(function () {
+            // 获取接口文本
+            let api = this.parentNode.children[1].dataset.path;
+            let desc = this.parentNode.children[2].textContent;
+            let text = api + " " + desc;
+            if (window.xxcaibi.copy) {
+              text = window.xxcaibi.BASE_URL + text;
+            }
+            // console.log(api, desc)
+            // 调用函数，复制到剪切板
+            text = text.replace(/([^:])\/+/g, '$1/')
+            copy(text);
+            // 提示复制成功
+            $(this).text("复制成功！");
+            // 定时改变显示文字
+            setTimeout(() => {
+              $(this).text("复制");
+            }, 500);
+            return false;
+          })
+        );
+        pathElement.attr("copy", "true");
+      });
+    }
+
+    // 复制 POST 请求的 JSON 请求体
+    function addCopy2(selector) {
+      if (!selector) {
+        selector = "#swagger-ui"
+      }
+      let lis = $(selector + ' li[role="presentation"]');
+      if (lis.length < 2) {
+        return;
+      }
+
+      lis.each(function (index, element) {
+        if (index % 2 === 0) {
+          return;
+        }
+        element = $(element);
+        let isCopy = element.attr("copy");
+        if (isCopy === "true") { // 已经添加过 copy 按钮
+          return;
+        }
+        element.after(
+          $("<button>复制</button>").css("cursor", "pointer").css("color", "#FFF").css("background", "#515a6e").css("border-color", "#17233d").css("padding", "4px 10px").css("border-radius", "4px").css("margin-right", "10px").click(function () {
+            // 获取接口文本
+            let preTag = $(selector + " .highlight-code pre")[0];
+            if (!preTag) {
+              alert("无法复制");
+              return;
+            }
+            let text = preTag.textContent;
+            // 调用函数，复制到剪切板
+            copy(text);
+            // 提示复制成功
+            $(this).text("复制成功！");
+            // 定时改变显示文字
+            setTimeout(() => {
+              $(this).text("复制");
+            }, 500);
+          })
+        );
+        element.attr("copy", "true");
+      });
+    }
+
+    window.onload = function () {
+      // Initialize Swagger UI
+      const ui = SwaggerUIBundle({
+        url: "swagger.json",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl,
+          CustomPlugin,
+        ],
+        docExpansion: "none",  // none(不展开) list(展开operations) full(全部展开)
+        onComplete: function () {
+          // Swagger-UI 渲染完成后回调; updateSpec 成功也会调用
+          // 但是如果数据太多会导致部分 HTML 元素在此时还未加载完成
+          console.log("Swagger UI onComplete...")
+          console.log("Swagger UI Version:", window.versions.swaggerUi.version)
+          parseBaseUrl();
+          addXXCaiBi();
+          checkSwaggerLoadingComplete(function () {
+            addCopy1();
+            addCopy2();
+
+            // Operations API 接口的点击事件
+            $(".opblock-tag").click(function () {
+              checkSwaggerLoadingComplete(function () {
+                addCopy1();
+                addCopy2();
+              });
+            });
+          });
+        },
+        // parameterMacro: function (operation, parameter) {
+        //   // 展开 API 对应的 operations 时触发, 可以在此修改 指定参数的默认值
+        //   console.log(operation, parameter);
+        //   return "";
+        // },
+      });
+      window.ui = ui;
+
+      window.xxcaibi = {
+        "BASE_URL": "",
+        "copy": true,
+
+        "ADMIN_KEY": "",
+        "TOKEN_KEY": "",
+
+        "adminUrls": {
+          "/login/GenAuthKey": true,
+          "/login/GenAuthKey2": true,
+        },
+      }
+
+      // 监听状态变化
+      $('#copy-base-url').change(function () {
+        window.xxcaibi.copy = $(this).is(':checked');
+        // console.log(window.xxcaibi);
+      });
+      $('#admin-key').change(function () {
+        window.xxcaibi.ADMIN_KEY = $(this).val().trim();
+        // console.log(window.xxcaibi);
+
+        ui.specActions.updateQueryParam("key", window.xxcaibi.ADMIN_KEY, true);
+      });
+      $('#token-key').change(function () {
+        window.xxcaibi.TOKEN_KEY = $(this).val().trim();
+        // console.log(window.xxcaibi);
+        if (window.xxcaibi.TOKEN_KEY) {
+          document.getElementById('urlInput').value = window.location.origin.replace(/^http/, 'ws') + '/ws/GetSyncMsg?key=' + window.xxcaibi.TOKEN_KEY
+        }
+
+        ui.specActions.updateQueryParam("key", window.xxcaibi.TOKEN_KEY);
+      });
+      $('.radio-group input[type="radio"]').change(function () {
+        let value = $(this).val();
+        let configs = ui.getConfigs();
+        configs.docExpansion = value
+
+        // // 更新整个 UI 数据; 会刷新 UI 导致 onComplete 回调
+        // const spec = ui.specSelectors.specJson().toJS();
+        // ui.specActions.updateConfigs(spec);
+
+        // 只更新配置; 不会刷新 UI 导致 onComplete 回调
+        ui.configsActions.toggle();
+        checkSwaggerLoadingComplete(function () {
+          addCopy1();
+          addCopy2();
+
+          // Operations API 接口的点击事件
+          $(".opblock-tag").click(function () {
+            checkSwaggerLoadingComplete(function () {
+              addCopy1();
+              addCopy2();
+            });
+          });
+        }); // DOM 节点无变化不会触发监听
+      });
+
+      let parseBaseUrl = function () {
+        let config = window.ui.specSelectors.specJson().toJS(); // 获取 spec 对象
+        let basePath = config.basePath || ''; // 获取 basePath
+        basePath = "" ? basePath === "/" : basePath;
+
+        // 获取当前网址的协议、域名和端口
+        let protocol = window.location.protocol;
+        let hostname = window.location.hostname;
+        let port = window.location.port;
+
+        // 组合协议、域名和端口
+        const baseUrl = protocol + "//" + hostname + (port ? ":" + port : "") + basePath;
+
+        // 显示结果
+        console.log("BASE_URL:", baseUrl);
+        window.xxcaibi.BASE_URL = baseUrl;
+      }
+
+      let addXXCaiBi = function () {
+        $("#xxcaibi").insertAfter('.information-container:first').css('display', 'block');
+        // 判断 tg-link 不存在
+        if (!document.getElementsByClassName("tg-link").length) {
+          $(".info__contact").append(
+            '<div class="tg-link">' +
+            '<a href="https://t.me/wx_ipad" target="_blank" class="tg-button">' +
+            '<img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram Logo" class="tg-icon">' +
+            '加入 Telegram 群' +
+            '</a>' +
+            '</div>'
+          );
+        }
+
+        $("#BASE_URL").html("BASE_URL: " + window.xxcaibi.BASE_URL);
+      }
+
+    };
+  </script>
+</body>
+
+</html>

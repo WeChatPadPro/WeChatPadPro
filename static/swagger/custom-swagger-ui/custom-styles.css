@@ -1,0 +1,347 @@
+:root {
+    --primary-color: #1890ff;
+    --secondary-color: #52c41a;
+    --background-color: #f5f5f5;
+    --text-color: #333;
+    --border-color: #e8e8e8;
+    --header-height: 60px;
+    --sidebar-width: 250px;
+    --code-bg: #282c34;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--background-color);
+}
+
+.custom-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.nav-links a.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.nav-links a:hover:not(.active) {
+    background-color: var(--background-color);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo img {
+    height: 40px;
+}
+
+.logo h1 {
+    font-size: 20px;
+    margin: 0;
+    color: var(--text-color);
+}
+
+.version-selector select {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.main-container {
+    display: flex;
+    margin-top: var(--header-height);
+    min-height: calc(100vh - var(--header-height));
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: white;
+    border-right: 1px solid var(--border-color);
+    padding: 20px;
+    position: fixed;
+    top: var(--header-height);
+    bottom: 0;
+    overflow-y: auto;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+#content-container {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    padding: 20px;
+}
+
+.swagger-ui-container {
+    width: 100%;
+}
+
+.websocket-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.ws-section {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.ws-section h2 {
+    color: var(--text-color);
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.ws-section h3 {
+    color: var(--text-color);
+    margin: 20px 0 12px;
+}
+
+.ws-config-info pre,
+.ws-example pre {
+    background-color: var(--code-bg);
+    color: #abb2bf;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 12px 0;
+}
+
+.ws-message-types table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+}
+
+.ws-message-types th,
+.ws-message-types td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid var(--border-color);
+}
+
+.ws-message-types th {
+    background-color: var(--background-color);
+    font-weight: 600;
+}
+
+.ws-message-types td pre {
+    margin: 0;
+    background-color: var(--code-bg);
+    padding: 8px;
+    border-radius: 4px;
+}
+
+/* 自定义Swagger UI样式覆盖 */
+.swagger-ui .topbar {
+    display: none;
+}
+
+.swagger-ui .info {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.swagger-ui .scheme-container {
+    margin: 0;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.swagger-ui .opblock {
+    margin: 0 0 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.swagger-ui .opblock .opblock-summary {
+    padding: 12px;
+}
+
+.swagger-ui .opblock .opblock-summary-method {
+    border-radius: 4px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.swagger-ui .btn {
+    border-radius: 4px;
+    box-shadow: none;
+}
+
+.swagger-ui select {
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.swagger-ui input[type=text] {
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+    
+    #content-container {
+        margin-left: 0;
+    }
+    
+    .custom-header {
+        padding: 0 10px;
+    }
+    
+    .logo h1 {
+        font-size: 16px;
+    }
+
+    .nav-links {
+        gap: 10px;
+    }
+
+    .nav-links a {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+
+    .ws-message-types {
+        overflow-x: auto;
+    }
+}
+
+.message-flow {
+    background-color: #f8f9fa;
+    padding: 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+}
+
+.message-flow ol {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.message-flow li {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.notes {
+    background-color: #fff7e6;
+    border-left: 4px solid #ffa940;
+    padding: 16px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.notes ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.notes li {
+    margin: 8px 0;
+    line-height: 1.6;
+    color: #873800;
+}
+
+.ws-section h4 {
+    color: var(--primary-color);
+    margin: 16px 0 8px;
+    font-size: 16px;
+}
+
+.ws-config-info pre {
+    position: relative;
+    padding-top: 32px;
+}
+
+.ws-config-info pre::before {
+    content: "代码示例";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #1e1e1e;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px 0 4px 0;
+}
+
+.api-method {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.api-method.get {
+    background-color: #61affe;
+}
+
+.api-method.post {
+    background-color: #49cc90;
+}
+
+.api-method.put {
+    background-color: #fca130;
+}
+
+.api-method.delete {
+    background-color: #f93e3e;
+}
+
+.api-path {
+    color: var(--text-color);
+    font-family: monospace;
+} 

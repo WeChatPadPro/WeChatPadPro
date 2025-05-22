@@ -1,0 +1,47 @@
+{
+  "debug": false,
+  "host": "0.0.0.0",
+  "port":"8848",
+  "apiVersion": "",
+  "ghWxid": "",
+  "adminKey": "",
+
+  "workerpoolsize": 500,
+  "maxworkertasklen": 1000,
+  "redisConfig": {
+    "Host":            "127.0.0.1",
+    "Port":            6379,
+    "Db":              1,
+    "User":           "default",
+    "Pass":           "",
+    "MaxIdle":         10,
+    "MaxActive":       20,
+    "IdleTimeout":     5000,
+    "MaxConnLifetime": 30,
+    "ConnectTimeout":  0
+  },
+
+  "mySqlConnectStr": "root:@tcp(127.0.0.1:3306)/wechat_mmtls?charset=utf8mb4&parseTime=true&loc=Local",
+
+  "disabledCmdList": ["A000"],
+
+  "newsSynWxId":false,
+  "rocketMq": false,
+  "rocketMqHost": "127.0.0.1:9876",
+  "rocketAccessKey":"123",
+  "rocketSecretKey":"123!#@13$",
+  "rabbitMq": false,
+  "topic": "wx_sync_msg_topic",
+  "rabbitMqUrl": "amqp://yunkong:123456@127.0.0.1:5672/",
+  "kafka": false,
+  "kafkaUrl": "192.168.10.40:9093,192.168.10.41:9093,192.168.10.42:9093",
+  "kafkaUsername": "yunkongkafka",
+  "kafkaPassword": "iSPmfJmtBgcvcTJZ123456",
+  "dt": true,
+  "cluster": {
+    "clusterName":"",
+    "zkAddr": "",
+    "ectdAddr": ""
+  }
+
+}

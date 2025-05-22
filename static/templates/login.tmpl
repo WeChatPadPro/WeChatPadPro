@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <style type="text/css">
+            .box{width:300px; text-align:center; font-szie:18px;}
+            .box img {width:100%;}
+            body{text-align:center}
+            #aa{display:block;
+                position:relative;
+                margin:auto;
+            }
+        </style>
+        <meta charset="utf-8">
+        <title>登陆二维码</title>
+    </head>
+    <body>
+        <div class="box" id="aa">
+            <img src="/static/qrcode/{{.img}}.png" align="center">
+            请使用手机微信扫码登陆
+            {{.resp}}
+        </div>
+    </body>
+</html>

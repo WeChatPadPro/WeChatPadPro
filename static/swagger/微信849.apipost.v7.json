@@ -1,0 +1,3127 @@
+{
+    "project": {
+        "name": "微信ipad849",
+        "description": "wechat-ipad849 WEB-API(支持长链接、自动心跳、自动二次登录、重启API服务自动登录)",
+        "details": {
+            "variable": [],
+            "servers": [
+                {
+                    "server_id": "85604aa0-d429-4899-861a-e2e324195cb6",
+                    "name": "本地服务"
+                },
+                {
+                    "server_id": "85604aa0-d429-4899-861a-e2e324195cb7",
+                    "name": "远程服务"
+                },
+                {
+                    "server_id": "85604aa0-d429-4899-861a-e2e324195cb8",
+                    "name": "TMP服务"
+                },
+                {
+                    "server_id": "default",
+                    "name": "默认服务"
+                }
+            ],
+            "markList": [
+                {
+                    "key": "developing",
+                    "name": "开发中",
+                    "color": "#3A86FF",
+                    "is_default": true
+                },
+                {
+                    "key": "complated",
+                    "name": "已完成",
+                    "color": "#2BA58F",
+                    "is_default": true
+                },
+                {
+                    "key": "modifying",
+                    "name": "需修改",
+                    "color": "#EC4646",
+                    "is_default": true
+                }
+            ],
+            "script": {
+                "pre_script": "",
+                "test": ""
+            },
+            "request": {
+                "query": [
+                    {
+                        "is_checked": "1",
+                        "type": "Text",
+                        "key": "",
+                        "value": "",
+                        "description": ""
+                    }
+                ],
+                "header": [
+                    {
+                        "is_checked": "1",
+                        "type": "Text",
+                        "key": "",
+                        "value": "",
+                        "description": ""
+                    }
+                ],
+                "body": [
+                    {
+                        "is_checked": "1",
+                        "type": "Text",
+                        "key": "",
+                        "value": "",
+                        "description": ""
+                    }
+                ]
+            },
+            "mock_rules": []
+        }
+    },
+    "apis": [
+        {
+            "target_type": "folder",
+            "name": "登录模块",
+            "mark": "developing",
+            "sort": 1,
+            "tags": [],
+            "created_uuid": "",
+            "request": {
+                "description": ""
+            },
+            "children": [
+                {
+                    "target_type": "api",
+                    "name": "生成授权码1",
+                    "mark": "developing",
+                    "sort": 1,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/GenAuthKey?key={{ADMIN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [
+                            {
+                                "type": "customScript",
+                                "enabled": 1,
+                                "data": "let res = pm.response.json();\nif (res[\"Code\"] != 200 || !res[\"Data\"]) {\n    return;\n}\nlet authKeys = res[\"Data\"];\n\nlet oldKeys = pm.environment.get(\"OLD_TOKEN_KEY\");\nif (!oldKeys) {\n    oldKeys = \"[]\";\n}\n\noldKeys = JSON.parse(oldKeys);\nconsole.log(\"上一次的 TOKEN_KEY:\", oldKeys);\nconsole.log(\"新获取的 TOKEN_KEY:\", authKeys);\n\noldKeys = [...oldKeys, ...authKeys];\noldKeys = JSON.stringify(oldKeys);\npm.environment.set(\"OLD_TOKEN_KEY\", oldKeys);\n\npm.environment.set(\"TOKEN_KEY\", authKeys[0]);\n",
+                                "id": "f8552ae2-a788-4afa-9510-e74d93812c75"
+                            }
+                        ],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n    \"Count\": 1,\n    \"Days\": 3\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{ADMIN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "生成授权码2",
+                    "mark": "developing",
+                    "sort": 2,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/GenAuthKey2?key={{ADMIN_KEY}}&count=1&days=3",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [
+                            {
+                                "type": "customScript",
+                                "enabled": 1,
+                                "data": "let res = pm.response.json();\nif (res[\"Code\"] != 200 || !res[\"Data\"]) {\n    return;\n}\nlet authKeys = res[\"Data\"];\n\nlet oldKeys = pm.environment.get(\"OLD_TOKEN_KEY\");\nif (!oldKeys) {\n    oldKeys = \"[]\";\n}\n\noldKeys = JSON.parse(oldKeys);\nconsole.log(\"上一次的 TOKEN_KEY:\", oldKeys);\nconsole.log(\"新获取的 TOKEN_KEY:\", authKeys);\n\noldKeys = [...oldKeys, ...authKeys];\noldKeys = JSON.stringify(oldKeys);\npm.environment.set(\"OLD_TOKEN_KEY\", oldKeys);\n\npm.environment.set(\"TOKEN_KEY\", authKeys[0]);\n",
+                                "id": "63900eb5-13b1-4a2e-972f-bda529c94bd2"
+                            }
+                        ],
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{ADMIN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                },
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "count",
+                                    "value": "1",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                },
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "days",
+                                    "value": "3",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "获取登录二维码",
+                    "mark": "developing",
+                    "sort": 3,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/GetLoginQrCodeNew?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": "let res = pm.response.json();\nif (res[\"Code\"] != 200 || !res[\"Data\"]) {\n    return;\n}\nlet qrCodeUrl = res[\"Data\"][\"QrCodeUrl\"];\nconsole.log(qrCodeUrl);\n\nconst template = `<html><img height=\"200px\" width=\"200px\" src=\"{{imgTemplate}}\" /></html>`;\n\npm.visualizer.set(template, {\n    imgTemplate: qrCodeUrl,\n})\n"
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [
+                            {
+                                "type": "customScript",
+                                "enabled": 1,
+                                "data": "let res = pm.response.json();\nif (res[\"Code\"] != 200 || !res[\"Data\"]) {\n    return;\n}\nlet qrCodeUrl = res[\"Data\"][\"QrCodeUrl\"];\nconsole.log(qrCodeUrl);\n\nconst template = `<html><img height=\"200px\" width=\"200px\" src=\"{{imgTemplate}}\" /></html>`;\n\npm.visualizer.set(template, {\n    imgTemplate: qrCodeUrl,\n})\n",
+                                "id": "8e375dbb-fa88-404b-bfa1-ed0ed7a39b90"
+                            }
+                        ],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"Proxy\": \"{{SOCKS5}}\"\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "检测登录二维码",
+                    "mark": "developing",
+                    "sort": 4,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/CheckLoginStatus?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": "let res = pm.response.json();\nif (res[\"Code\"] != 200 || !res[\"Data\"]) {\n    return;\n}\nlet wxid = res[\"Data\"][\"wxid\"];\nif (!wxid) {\n    return;\n}\nconsole.log(wxid);\npm.environment.set(\"Wxid\", wxid);\n"
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [
+                            {
+                                "type": "customScript",
+                                "enabled": 1,
+                                "data": "let res = pm.response.json();\nif (res[\"Code\"] != 200 || !res[\"Data\"]) {\n    return;\n}\nlet wxid = res[\"Data\"][\"wxid\"];\nif (!wxid) {\n    return;\n}\nconsole.log(wxid);\npm.environment.set(\"Wxid\", wxid);\n",
+                                "id": "00ac9bac-43bc-4432-883f-f516fb716766"
+                            }
+                        ],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "获取初始化状态",
+                    "mark": "developing",
+                    "sort": 5,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/GetInItStatus?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "获取在线状态",
+                    "mark": "developing",
+                    "sort": 6,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/GetLoginStatus?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "检测微信登录环境",
+                    "mark": "developing",
+                    "sort": 7,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/CheckCanSetAlias?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "打印链接数量",
+                    "mark": "developing",
+                    "sort": 8,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/GetIWXConnect?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "获取A62数据",
+                    "mark": "developing",
+                    "sort": 9,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/Get62Data?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": "let res = pm.response.json();\nif (res[\"Code\"] != 200 || !res[\"Data\"]) {\n    return;\n}\nlet a62_data = res[\"Data\"];\nconsole.log(a62_data);\n\npm.environment.set(\"A62_DATA\", a62_data);\n"
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [
+                            {
+                                "type": "customScript",
+                                "enabled": 1,
+                                "data": "let res = pm.response.json();\nif (res[\"Code\"] != 200 || !res[\"Data\"]) {\n    return;\n}\nlet a62_data = res[\"Data\"];\nconsole.log(a62_data);\n\npm.environment.set(\"A62_DATA\", a62_data);\n",
+                                "id": "4b86f0ec-182d-46b0-a9b9-6159de60357d"
+                            }
+                        ],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "A62数据登录",
+                    "mark": "developing",
+                    "sort": 10,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/DeviceLogin?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"DeviceId\": \"\",\n  \"DeviceInfo\": {\n    \"AndroidId\": \"\",\n    \"ImeI\": \"\",\n    \"Manufacturer\": \"\",\n    \"Model\": \"\"\n  },\n  \"Password\": \"\",\n  \"Proxy\": \"{{SOCKS5}}\",\n  \"Ticket\": \"{{A62_DATA}}\",\n  \"Type\": 0,\n  \"UserName\": \"\"\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "A62新疆号登录",
+                    "mark": "developing",
+                    "sort": 11,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "login/LoginNew?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"DeviceId\": \"\",\n  \"DeviceInfo\": {\n    \"AndroidId\": \"\",\n    \"ImeI\": \"\",\n    \"Manufacturer\": \"\",\n    \"Model\": \"\"\n  },\n  \"Password\": \"\",\n  \"Proxy\": \"{{SOCKS5}}\",\n  \"Ticket\": \"{{A62_DATA}}\",\n  \"Type\": 0,\n  \"UserName\": \"\"\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "A16数据登录",
+                    "mark": "developing",
+                    "sort": 12,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "login/A16Login?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"DeviceId\": \"\",\n  \"DeviceInfo\": {\n    \"AndroidId\": \"\",\n    \"ImeI\": \"\",\n    \"Manufacturer\": \"\",\n    \"Model\": \"\"\n  },\n  \"Password\": \"\",\n  \"Proxy\": \"{{SOCKS5}}\",\n  \"Ticket\": \"{{A16_DATA}}\",\n  \"Type\": 0,\n  \"UserName\": \"\"\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "辅助新手机登录",
+                    "mark": "developing",
+                    "sort": 13,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "login/PhoneDeviceLogin?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"Url\": \"\"\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "获取验证码",
+                    "mark": "developing",
+                    "sort": 14,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "login/WxBindOpMobileForReg?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"OpCode\": 0,\n  \"PhoneNumber\": \"\",\n  \"Proxy\": \"{{SOCKS5}}\",\n  \"Reg\": 0,\n  \"VerifyCode\": \"\"\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "短信登录",
+                    "mark": "developing",
+                    "sort": 15,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "login/SmsLogin?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"DeviceId\": \"\",\n  \"DeviceInfo\": {\n    \"AndroidId\": \"\",\n    \"ImeI\": \"\",\n    \"Manufacturer\": \"\",\n    \"Model\": \"\"\n  },\n  \"Password\": \"\",\n  \"Proxy\": \"{{SOCKS5}}\",\n  \"Ticket\": \"\",\n  \"Type\": 0,\n  \"UserName\": \"\"\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "唤醒登录",
+                    "mark": "developing",
+                    "sort": 16,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/WakeUpLogin?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "退出登录",
+                    "mark": "developing",
+                    "sort": 17,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/LogOut?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "HTML展示登录二维码(基本无用)",
+                    "mark": "developing",
+                    "sort": 18,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/login/ShowQrCode?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                }
+            ]
+        },
+        {
+            "target_type": "folder",
+            "name": "消息模块",
+            "mark": "developing",
+            "sort": 2,
+            "tags": [],
+            "created_uuid": "",
+            "request": {
+                "description": ""
+            },
+            "children": [
+                {
+                    "target_type": "websocket",
+                    "name": "同步消息",
+                    "mark": "developing",
+                    "sort": 1,
+                    "tags": [],
+                    "created_uuid": "-1",
+                    "method": "Raw",
+                    "request": {
+                        "url": "{{WS_URL}}/ws/GetSyncMsg?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "query": {
+                            "parameter": [
+                                {
+                                    "description": "",
+                                    "is_checked": 1,
+                                    "key": "key",
+                                    "type": "Text",
+                                    "not_null": 1,
+                                    "field_type": "String",
+                                    "value": "{{TOKEN_KEY}}"
+                                }
+                            ]
+                        }
+                    },
+                    "message": "",
+                    "messageType": "Text",
+                    "socketConfig": {
+                        "informationSize": 5,
+                        "reconnectNum": 5,
+                        "reconnectTime": 5000,
+                        "shakeHandsPath": "/socket.io",
+                        "shakeHandsTimeOut": 0,
+                        "socketEventName": "",
+                        "socketIoEventListeners": [],
+                        "socketIoVersion": "v3"
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "同步历史消息",
+                    "mark": "developing",
+                    "sort": 2,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/message/NewSyncHistoryMessage?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "发送文本消息",
+                    "mark": "developing",
+                    "sort": 3,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/message/SendTextMessage?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"MsgItem\": [\n    {\n      \"AtWxIDList\": [\n      ],\n      \"ImageContent\": \"\",\n      \"MsgType\": 1,\n      \"TextContent\": \"你好啊\",\n      \"ToUserName\": \"{{Wxid1}}\"\n    }\n  ]\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "发送文本消息_群AT",
+                    "mark": "developing",
+                    "sort": 4,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/message/SendTextMessage?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"MsgItem\": [\n    {\n      \"AtWxIDList\": [\n        \"{{Wxid1}}\"\n      ],\n      \"ImageContent\": \"\",\n      \"MsgType\": 1,\n      \"TextContent\": \"@XXX 你好啊\",\n      \"ToUserName\": \"{{QID}}\"\n    }\n  ]\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "群发文本消息",
+                    "mark": "developing",
+                    "sort": 5,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/message/GroupMassMsgText?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"Content\": \"你好啊\",\n  \"ToUserName\": [\n    \"{{Wxid1}}\"\n  ]\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "撤销消息",
+                    "mark": "developing",
+                    "sort": 6,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/message/RevokeMsg?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"ClientMsgId\": 0,\n  \"NewMsgId\": \"\",\n  \"ToUserName\": \"\"\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                }
+            ]
+        },
+        {
+            "target_type": "folder",
+            "name": "支付模块",
+            "mark": "developing",
+            "sort": 3,
+            "tags": [],
+            "created_uuid": "",
+            "request": {
+                "description": ""
+            },
+            "children": [
+                {
+                    "target_type": "api",
+                    "name": "生成自定义二维码",
+                    "mark": "developing",
+                    "sort": 1,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/pay/GeneratePayQCode?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": "let res = pm.response.json();\nif (res[\"Code\"] != 200) {\n    return;\n}\nlet payUrl = res[\"Data\"][\"pay_url\"];\nconsole.log(payUrl);\n\nlet apiUrl = \"https://api.caoliao.net/api/qrcode/code?text=\" + payUrl;\npm.sendRequest(apiUrl, function (err, response) {\n    const html = response.stream.toString();\n    // qr.api.cli.im/newqr/create?data=123&kid=cliim&key=4b243134fc1d98a864b053ae488211c6\n    const regex = /src=\\\"(\\/\\/qr\\.api\\.cli\\.im\\/newqr\\/create\\?data=.*?&kid=cliim&key=.*?)\\\"/;\n    const match = html.match(regex);\n    if (!match) {\n        return;\n    }\n    console.log(match);\n    const qrUrl = \"https:\" + match[1];\n    console.log(qrUrl);\n\n    const template = `<html><img height=\"200px\" width=\"200px\" src=\"{{imgTemplate}}\" /></html>`;\n    pm.visualizer.set(template, {\n        imgTemplate: qrUrl,\n    });\n});\n"
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [
+                            {
+                                "type": "customScript",
+                                "enabled": 1,
+                                "data": "let res = pm.response.json();\nif (res[\"Code\"] != 200) {\n    return;\n}\nlet payUrl = res[\"Data\"][\"pay_url\"];\nconsole.log(payUrl);\n\nlet apiUrl = \"https://api.caoliao.net/api/qrcode/code?text=\" + payUrl;\npm.sendRequest(apiUrl, function (err, response) {\n    const html = response.stream.toString();\n    // qr.api.cli.im/newqr/create?data=123&kid=cliim&key=4b243134fc1d98a864b053ae488211c6\n    const regex = /src=\\\"(\\/\\/qr\\.api\\.cli\\.im\\/newqr\\/create\\?data=.*?&kid=cliim&key=.*?)\\\"/;\n    const match = html.match(regex);\n    if (!match) {\n        return;\n    }\n    console.log(match);\n    const qrUrl = \"https:\" + match[1];\n    console.log(qrUrl);\n\n    const template = `<html><img height=\"200px\" width=\"200px\" src=\"{{imgTemplate}}\" /></html>`;\n    pm.visualizer.set(template, {\n        imgTemplate: qrUrl,\n    });\n});\n",
+                                "id": "68742115-7240-470c-8c3b-4f6c583cd389"
+                            }
+                        ],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"Money\": \"999\",\n  \"Name\": \"明月清风\"\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                }
+            ]
+        },
+        {
+            "target_type": "folder",
+            "name": "朋友模块",
+            "mark": "developing",
+            "sort": 4,
+            "tags": [],
+            "created_uuid": "",
+            "request": {
+                "description": ""
+            },
+            "children": [
+                {
+                    "target_type": "api",
+                    "name": "获取好友列表",
+                    "mark": "developing",
+                    "sort": 1,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/friend/GetFriendList?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "获取关注的公众号列表",
+                    "mark": "developing",
+                    "sort": 2,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/friend/GetGHList?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "获取保存的群聊列表",
+                    "mark": "developing",
+                    "sort": 3,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/friend/GroupList?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "获取手机通讯录好友",
+                    "mark": "developing",
+                    "sort": 4,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/friend/GetMFriend?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "获取全部联系人",
+                    "mark": "developing",
+                    "sort": 5,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/friend/GetContactList?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"CurrentChatRoomContactSeq\": 0,\n  \"CurrentWxcontactSeq\": 0\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "获取联系人详情",
+                    "mark": "developing",
+                    "sort": 6,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/friend/GetContactDetailsList?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"RoomWxIDList\": [\n    \"\"\n  ],\n  \"UserNames\": [\n    \"\"\n  ]\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "获取好友关系",
+                    "mark": "developing",
+                    "sort": 7,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/friend/GetFriendRelation?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"UserName\": \"{{Wxid1}}\"\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "删除好友",
+                    "mark": "developing",
+                    "sort": 8,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/friend/DelContact?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "{\n  \"DelUserName\": \"\"\n}",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                }
+            ]
+        },
+        {
+            "target_type": "folder",
+            "name": "群聊模块",
+            "mark": "developing",
+            "sort": 5,
+            "tags": [],
+            "created_uuid": "",
+            "request": {
+                "description": ""
+            },
+            "children": []
+        },
+        {
+            "target_type": "folder",
+            "name": "设备模块",
+            "mark": "developing",
+            "sort": 6,
+            "tags": [],
+            "created_uuid": "",
+            "request": {
+                "description": ""
+            },
+            "children": [
+                {
+                    "target_type": "api",
+                    "name": "获取在线设备信息",
+                    "mark": "developing",
+                    "sort": 1,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/equipment/GetOnlineInfo?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                },
+                {
+                    "target_type": "api",
+                    "name": "获取安全设备列表",
+                    "mark": "developing",
+                    "sort": 2,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "POST",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/equipment/GetSafetyInfo?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": ""
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                }
+            ]
+        },
+        {
+            "target_type": "folder",
+            "name": "用户模块",
+            "mark": "developing",
+            "sort": 7,
+            "tags": [],
+            "created_uuid": "",
+            "request": {
+                "description": ""
+            },
+            "children": [
+                {
+                    "target_type": "api",
+                    "name": "获取个人资料信息",
+                    "mark": "developing",
+                    "sort": 1,
+                    "tags": [],
+                    "created_uuid": "",
+                    "method": "GET",
+                    "mock": "{}",
+                    "mock_url": "",
+                    "request": {
+                        "url": "/user/GetProfile?key={{TOKEN_KEY}}",
+                        "description": "",
+                        "event": {
+                            "pre_script": "",
+                            "test": "let res = pm.response.json();\nif (res[\"Code\"] != 200 || !res[\"Data\"]) {\n    return;\n}\nlet wxid = res[\"Data\"][\"userInfo\"][\"userName\"][\"str\"];\nconsole.log(wxid);\npm.environment.set(\"Wxid\", wxid);\n"
+                        },
+                        "pre_tasks": [],
+                        "post_tasks": [
+                            {
+                                "type": "customScript",
+                                "enabled": 1,
+                                "data": "let res = pm.response.json();\nif (res[\"Code\"] != 200 || !res[\"Data\"]) {\n    return;\n}\nlet wxid = res[\"Data\"][\"userInfo\"][\"userName\"][\"str\"];\nconsole.log(wxid);\npm.environment.set(\"Wxid\", wxid);\n",
+                                "id": "8c0ea637-2573-4589-a7eb-e3443e545f31"
+                            }
+                        ],
+                        "body": {
+                            "mode": "json",
+                            "parameter": [],
+                            "raw": "",
+                            "raw_para": [],
+                            "raw_schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        },
+                        "query": {
+                            "parameter": [
+                                {
+                                    "is_checked": "1",
+                                    "type": "Text",
+                                    "key": "key",
+                                    "value": "{{TOKEN_KEY}}",
+                                    "not_null": "-1",
+                                    "description": "",
+                                    "field_type": "Text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": {
+                        "success": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "成功",
+                                "isDefault": 1,
+                                "code": 200,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        },
+                        "error": {
+                            "raw": "",
+                            "parameter": [],
+                            "expect": {
+                                "name": "失败",
+                                "isDefault": -1,
+                                "code": 404,
+                                "contentType": "json",
+                                "verifyType": "schema",
+                                "mock": "",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "children": []
+                }
+            ]
+        }
+    ],
+    "envs": [
+        {
+            "env_id": "fee06bb5-1ca4-4ec8-b799-c2bdac49a905",
+            "list": {
+                "WS_URL": {
+                    "value": "ws://127.0.0.1:8848",
+                    "current_value": "ws://127.0.0.1:8848",
+                    "description": "【WS接口基础URL】"
+                },
+                "ADMIN_KEY": {
+                    "current_value": "",
+                    "description": "【管理接口的Key】",
+                    "value": ""
+                },
+                "SOCKS5": {
+                    "current_value": "socks5://username:password@ipv4:port",
+                    "description": "【socks5代理】",
+                    "value": "socks5://username:password@ipv4:port"
+                },
+                "TOKEN_KEY": {
+                    "current_value": "",
+                    "description": "【WX接口的Key】",
+                    "value": ""
+                },
+                "Wxid": {
+                    "current_value": "",
+                    "description": "【当前登录账号wxid】",
+                    "value": ""
+                },
+                "Wxid1": {
+                    "current_value": "",
+                    "description": "【测试接收消息的wxid】",
+                    "value": ""
+                },
+                "QID": {
+                    "current_value": "",
+                    "description": "【测试群组ID】",
+                    "value": ""
+                },
+                "A16_DATA": {
+                    "current_value": "",
+                    "description": "【A16数据】",
+                    "value": ""
+                },
+                "A62_DATA": {
+                    "current_value": "",
+                    "description": "【A62数据】",
+                    "value": ""
+                }
+            },
+            "name": "明月清风的环境",
+            "pre_url": "http://127.0.0.1:8848",
+            "pre_urls": {
+                "default": "http://127.0.0.1:8848",
+                "85604aa0-d429-4899-861a-e2e324195cb6": "http://127.0.0.1:8848",
+                "85604aa0-d429-4899-861a-e2e324195cb7": "http://111.67.197.37:8848",
+                "85604aa0-d429-4899-861a-e2e324195cb8": ""
+            }
+        },
+        {
+            "env_id": "-1",
+            "list": {
+                "WS_URL": {
+                    "value": "ws://127.0.0.1:8848",
+                    "current_value": "ws://127.0.0.1:8848",
+                    "description": "【WS接口基础URL】"
+                },
+                "ADMIN_KEY": {
+                    "current_value": "",
+                    "description": "【管理接口的Key】",
+                    "value": ""
+                },
+                "SOCKS5": {
+                    "current_value": "socks5://username:password@ipv4:port",
+                    "description": "【socks5代理】",
+                    "value": "socks5://username:password@ipv4:port"
+                },
+                "TOKEN_KEY": {
+                    "current_value": "",
+                    "description": "【WX接口的Key】",
+                    "value": ""
+                },
+                "Wxid": {
+                    "current_value": "",
+                    "description": "【当前登录账号wxid】",
+                    "value": ""
+                },
+                "Wxid1": {
+                    "current_value": "",
+                    "description": "【测试接收消息的wxid】",
+                    "value": ""
+                },
+                "QID": {
+                    "current_value": "",
+                    "description": "【测试群组ID】",
+                    "value": ""
+                },
+                "A16_DATA": {
+                    "current_value": "",
+                    "description": "【A16数据】",
+                    "value": ""
+                },
+                "A62_DATA": {
+                    "current_value": "",
+                    "description": "【A62数据】",
+                    "value": ""
+                }
+            },
+            "name": "默认环境",
+            "pre_url": "http://127.0.0.1:8848",
+            "pre_urls": {
+                "default": "http://127.0.0.1:8848",
+                "85604aa0-d429-4899-861a-e2e324195cb6": "http://127.0.0.1:8848",
+                "85604aa0-d429-4899-861a-e2e324195cb7": "http://111.67.197.37:8848",
+                "85604aa0-d429-4899-861a-e2e324195cb8": ""
+            }
+        },
+        {
+            "env_id": "-2",
+            "list": {},
+            "name": "Mock环境",
+            "pre_url": "https://console-mock.apipost.cn/mock/2422b5fa-eb70-44af-afe7-668160334122/",
+            "pre_urls": {
+                "default": "https://console-mock.apipost.cn/mock/2422b5fa-eb70-44af-afe7-668160334122/"
+            }
+        }
+    ],
+    "models": []
+}

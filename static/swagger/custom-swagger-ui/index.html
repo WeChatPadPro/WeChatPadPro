@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeChat API 文档</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui.css">
+    <link rel="stylesheet" href="custom-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui-standalone-preset.js"></script>
+</head>
+<body>
+    <div class="custom-header">
+        <div class="logo">
+            <img src="logo.png" alt="API Logo">
+            <h1>WeChat API 文档中心</h1>
+        </div>
+        <div class="nav-links">
+            <a href="#rest-api" class="active">REST API</a>
+            <a href="#websocket">WebSocket</a>
+        </div>
+        <div class="version-selector">
+            <select id="version-select">
+                <option value="current">当前版本</option>
+                <option value="history">历史版本</option>
+            </select>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="search-box">
+                <input type="text" placeholder="搜索API...">
+            </div>
+            <div class="api-tree"></div>
+        </div>
+        <div id="content-container">
+            <div id="swagger-ui" class="swagger-ui-container"></div>
+            <div id="websocket-docs" class="websocket-container" style="display: none;">
+                <div class="ws-section">
+                    <h2>WebSocket 客户端配置与使用说明</h2>
+                    
+                    <div class="ws-config-info">
+                        <h3>1. 基础配置</h3>
+                        <pre><code>
+// WebSocket服务器地址
+const WS_SERVER = 'ws://your-api-domain/ws';
+
+// 消息类型定义
+const MSG_TYPE = {
+    SYNC: 'sync_message',      // 同步消息
+    NOTIFY: 'notify',          // 通知消息
+    HEARTBEAT: 'heartbeat',    // 心跳包
+    AUTH: 'auth'               // 认证消息
+};
+
+// 配置参数
+const WS_CONFIG = {
+    heartbeatInterval: 30000,  // 心跳间隔(ms)
+    reconnectInterval: 3000,   // 重连间隔(ms)
+    maxReconnectAttempts: 5    // 最大重连次数
+};</code></pre>
+
+                        <h3>2. 同步消息处理</h3>
+                        <div class="message-flow">
+                            <h4>2.1 消息流程</h4>
+                            <ol>
+                                <li>客户端连接WebSocket服务器</li>
+                                <li>发送认证信息</li>
+                                <li>接收服务器推送的同步消息</li>
+                                <li>处理消息并更新本地状态</li>
+                                <li>发送消息处理确认</li>
+                            </ol>
+                        </div>
+
+                        <h4>2.2 消息格式</h4>
+                        <pre><code>
+// 发送消息格式
+{
+    "type": "sync_message",
+    "data": {
+        "msgId": "msg_123456",          // 消息ID
+        "fromUser": "wxid_xxx",         // 发送者ID
+        "toUser": "wxid_yyy",           // 接收者ID
+        "content": "消息内容",           // 消息内容
+        "msgType": 1,                   // 消息类型(1:文本 2:图片 3:语音 4:视频)
+        "timestamp": 1678234567890,     // 时间戳
+        "extras": {}                    // 额外信息
+    }
+}
+
+// 消息确认格式
+{
+    "type": "sync_ack",
+    "data": {
+        "msgId": "msg_123456",          // 消息ID
+        "status": "received",           // 状态：received/processed
+        "timestamp": 1678234567890      // 确认时间戳
+    }
+}</code></pre>
+
+                        <h4>2.3 消息处理示例</h4>
+                        <pre><code>
+// 消息处理函数
+function handleSyncMessage(message) {
+    const { msgId, fromUser, content, msgType, timestamp } = message;
+    
+    // 1. 检查消息是否重复
+    if (isMessageDuplicate(msgId)) {
+        console.log(`重复消息: ${msgId}`);
+        return;
+    }
+    
+    // 2. 消息存储
+    storeMessage({
+        msgId,
+        fromUser,
+        content,
+        msgType,
+        timestamp
+    });
+    
+    // 3. 发送确认回执
+    sendMessageAck(msgId);
+    
+    // 4. 触发UI更新
+    updateUIWithMessage(message);
+}
+
+// 消息确认函数
+function sendMessageAck(msgId) {
+    ws.send(JSON.stringify({
+        type: 'sync_ack',
+        data: {
+            msgId: msgId,
+            status: 'processed',
+            timestamp: Date.now()
+        }
+    }));
+}
+
+// 消息重复检查
+function isMessageDuplicate(msgId) {
+    return processedMessages.has(msgId);
+}
+
+// 消息存储
+function storeMessage(message) {
+    // 存储到本地数据库或内存
+    messageStore.set(message.msgId, message);
+    processedMessages.add(message.msgId);
+}</code></pre>
+
+                        <h3>3. 完整的WebSocket客户端实现</h3>
+                        <pre><code>
+class WeChatWebSocket {
+    constructor(config = {}) {
+        this.config = { ...WS_CONFIG, ...config };
+        this.ws = null;
+        this.heartbeatTimer = null;
+        this.reconnectAttempts = 0;
+        this.messageHandlers = new Map();
+        this.processedMessages = new Set();
+        this.messageStore = new Map();
+        
+        // 初始化消息处理器
+        this.initMessageHandlers();
+    }
+
+    initMessageHandlers() {
+        // 注册消息处理器
+        this.messageHandlers.set(MSG_TYPE.SYNC, this.handleSyncMessage.bind(this));
+        this.messageHandlers.set(MSG_TYPE.NOTIFY, this.handleNotification.bind(this));
+        this.messageHandlers.set(MSG_TYPE.HEARTBEAT, this.handleHeartbeat.bind(this));
+    }
+
+    connect() {
+        this.ws = new WebSocket(WS_SERVER);
+        this.ws.binaryType = 'arraybuffer';
+        
+        this.ws.onopen = this.handleOpen.bind(this);
+        this.ws.onmessage = this.handleMessage.bind(this);
+        this.ws.onclose = this.handleClose.bind(this);
+        this.ws.onerror = this.handleError.bind(this);
+    }
+
+    handleOpen() {
+        console.log('WebSocket连接已建立');
+        this.reconnectAttempts = 0;
+        this.startHeartbeat();
+        this.authenticate();
+    }
+
+    handleMessage(event) {
+        const message = JSON.parse(event.data);
+        const handler = this.messageHandlers.get(message.type);
+        
+        if (handler) {
+            handler(message.data);
+        } else {
+            console.warn(`未知消息类型: ${message.type}`);
+        }
+    }
+
+    handleSyncMessage(data) {
+        // 检查消息是否重复
+        if (this.isMessageDuplicate(data.msgId)) {
+            return;
+        }
+
+        // 处理消息
+        this.storeMessage(data);
+        this.sendMessageAck(data.msgId);
+        this.updateUI(data);
+
+        // 触发自定义事件
+        this.emit('messageReceived', data);
+    }
+
+    authenticate() {
+        this.send({
+            type: MSG_TYPE.AUTH,
+            data: {
+                token: this.config.authToken,
+                deviceId: this.config.deviceId,
+                timestamp: Date.now()
+            }
+        });
+    }
+
+    send(data) {
+        if (this.ws?.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify(data));
+        } else {
+            console.warn('WebSocket未连接，消息发送失败');
+        }
+    }
+
+    startHeartbeat() {
+        this.heartbeatTimer = setInterval(() => {
+            this.send({
+                type: MSG_TYPE.HEARTBEAT,
+                data: { timestamp: Date.now() }
+            });
+        }, this.config.heartbeatInterval);
+    }
+
+    stopHeartbeat() {
+        if (this.heartbeatTimer) {
+            clearInterval(this.heartbeatTimer);
+            this.heartbeatTimer = null;
+        }
+    }
+
+    reconnect() {
+        if (this.reconnectAttempts >= this.config.maxReconnectAttempts) {
+            console.error('达到最大重连次数');
+            this.emit('maxReconnectAttemptsReached');
+            return;
+        }
+
+        this.reconnectAttempts++;
+        console.log(`尝试重连 (${this.reconnectAttempts}/${this.config.maxReconnectAttempts})`);
+        
+        setTimeout(() => {
+            this.connect();
+        }, this.config.reconnectInterval);
+    }
+
+    // 工具方法
+    isMessageDuplicate(msgId) {
+        return this.processedMessages.has(msgId);
+    }
+
+    storeMessage(message) {
+        this.messageStore.set(message.msgId, message);
+        this.processedMessages.add(message.msgId);
+        
+        // 限制已处理消息集合的大小
+        if (this.processedMessages.size > 1000) {
+            const iterator = this.processedMessages.values();
+            this.processedMessages.delete(iterator.next().value);
+        }
+    }
+
+    sendMessageAck(msgId) {
+        this.send({
+            type: 'sync_ack',
+            data: {
+                msgId,
+                status: 'processed',
+                timestamp: Date.now()
+            }
+        });
+    }
+
+    updateUI(message) {
+        // 实现UI更新逻辑
+        console.log('收到新消息:', message);
+    }
+
+    // 事件处理
+    emit(eventName, data) {
+        const event = new CustomEvent(eventName, { detail: data });
+        window.dispatchEvent(event);
+    }
+
+    // 清理资源
+    destroy() {
+        this.stopHeartbeat();
+        if (this.ws) {
+            this.ws.close();
+            this.ws = null;
+        }
+    }
+}
+
+// 使用示例
+const wsClient = new WeChatWebSocket({
+    authToken: 'your-auth-token',
+    deviceId: 'your-device-id',
+    heartbeatInterval: 30000,
+    reconnectInterval: 3000,
+    maxReconnectAttempts: 5
+});
+
+// 监听消息事件
+window.addEventListener('messageReceived', (event) => {
+    const message = event.detail;
+    console.log('新消息:', message);
+});
+
+// 连接WebSocket服务器
+wsClient.connect();</code></pre>
+
+                        <h3>4. 注意事项</h3>
+                        <div class="notes">
+                            <ul>
+                                <li>确保处理消息的幂等性，避免重复处理相同消息</li>
+                                <li>实现合适的重连策略，避免频繁重连</li>
+                                <li>保持心跳包定时发送，维持连接活性</li>
+                                <li>合理存储和清理已处理的消息ID</li>
+                                <li>注意处理网络异常和断线重连场景</li>
+                                <li>在UI更新时注意性能优化</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="custom-script.js"></script>
+    <script>
+        window.onload = function() {
+            const ui = SwaggerUIBundle({
+                url: "../swagger.json",
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "BaseLayout",
+                docExpansion: "list",
+                defaultModelsExpandDepth: 1,
+                defaultModelExpandDepth: 1,
+                displayRequestDuration: true,
+                filter: true,
+                syntaxHighlight: {
+                    activate: true,
+                    theme: "monokai"
+                }
+            });
+            window.ui = ui;
+        };
+    </script>
+</body>
+</html> 
