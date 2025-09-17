@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   wechatpadpro:
-    image: wechatpadpro/wechatpadpro:${WECHAT_TAG:-latest}
+    image: registry.cn-hangzhou.aliyuncs.com/wechatpad/wechatpadpro:v18.6
     container_name: wechatpadpro
     restart: always
     ports:
@@ -65,7 +65,7 @@ services:
       - wechatpadpro-network
 
   mysql:
-    image: mysql:8.0
+    image: registry.cn-hangzhou.aliyuncs.com/wechatpad/wechatpadpro-mysql:8.0
     container_name: mysql
     restart: always
     environment:
@@ -86,7 +86,7 @@ services:
       - wechatpadpro-network
 
   redis:
-    image: redis:6
+    image: registry.cn-hangzhou.aliyuncs.com/wechatpad/wechatpadpro-redis:6
     container_name: redis
     restart: always
     command: redis-server --appendonly yes
