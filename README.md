@@ -4,10 +4,10 @@
   <img src="static/doc/4270252wc57e-4b66-9ae3-0a81fc001255.png" alt="WeChatPadPro" width="800px">
 </div>
 
-<h1 align="center">🚀 基於 WeChat Pad 協議的高級管理工具v875</h1>
+<h1 align="center">🚀 基於 WeChat Pad 協議的高級管理工具v880</h1>
 
 <div align="center">
-  <strong>🌐 <a href="https://gwpad.com/">在線演示系統</a> - 默認密碼:adminkey = 28d21d0f9748172c970ba4c208af5564</strong>
+  <strong>🌐 <a href="https://gwpad.com/">在線演示系統</a> </strong>
 </div>
 
 <p align="center">
@@ -50,7 +50,7 @@
 | GWPad 官方网站 | https://gwpad.com/ |
 | Cloud 云端控制台 | https://cloud.wechatpadpro.com/ |
 | Cloud API 接口文档 | https://gwpad.com/Cloudswagger/index.html |
-| Cloud API 地址 | https://api.wechatpadpro.com/v1 |
+ |
 
 ---
 
