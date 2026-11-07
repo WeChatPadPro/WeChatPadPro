@@ -139,7 +139,14 @@ GWPad 的核心交付是**协议连接、接口调用和运行管理能力**，�
 - 多账号节点的集中连接和状态监控；
 - AI 应用、开发工具或内部业务平台的消息接入。
 
-> GWPad 是独立的第三方开发者服务，与微信官方无隶属或授权关系。使用前应评估微信平台规则、账号安全、个人信息保护及相关法律合规要求。  
+## 官网与接口文档地址
+
+| 项目 | 地址 |
+| --- | --- |
+| 官网 | [https://gwpad.com/](https://gwpad.com/) |
+| 接口文档（Cloud Swagger） | [https://gwpad.com/Cloudswagger/index.html](https://gwpad.com/Cloudswagger/index.html) |
+| Cloud 工作区 | [https://cloud.wechatpadpro.com/](https://cloud.wechatpadpro.com/) |
+| API 示例基础地址 | `https://api.wechatpadpro.com/v1` |
 # WeChat API & iPad 協議使用說明與風控防範教程（2025 年更新）
 
 本教程旨在協助開發者全面了解 WeChat API 平台與 iPad 協議的登入行為、介面使用限制、風控策略及預防措施，確保使用穩定、安全、高效。
